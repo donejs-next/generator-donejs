@@ -64,7 +64,7 @@ describe('generator-donejs', function () {
 
   describe('Absolute path support', function() {
     var tmpDir;
-    
+
     before(function(done) {
       helpers.run(path.join(__dirname, '../app'))
         .inTmpDir(function(dir) {
@@ -75,7 +75,7 @@ describe('generator-donejs', function () {
           skipInstall: true
         })
         .withPrompts({
-          folder: tmpDir
+          folder: path.join(__dirname, "../app/src")
         }).on('end', done);
     });
 
