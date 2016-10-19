@@ -120,6 +120,11 @@ module.exports = generators.Base.extend({
 		var pkgName = this.props.name;
 		var pkgMain = pkgName + '/index.stache!done-autorender';
 
+    if (path.isAbsolute(this.props.folder)) {
+      var cd = path.resolve();
+      this.props.folder = path.normalize(path.relative(cd, this.props.folder));
+    }
+
     var self = this;
     var pkgJsonFields = {
       name: pkgName,

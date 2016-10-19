@@ -60,7 +60,56 @@ describe('generator-donejs', function () {
           done();
         });
     });
+  });
 
+  // it('converts absolute to relative path', function (done) {
+  //   var tmpDir;
+  //
+  //   helpers.run(path.join(__dirname, '../app'))
+  //     .inTmpDir(function (dir) {
+  //       tmpDir = dir;
+  //     })
+  //     .withOptions({
+  //       packages: donejsPackage.donejs,
+  //       skipInstall: true
+  //     })
+  //     .withPrompts({
+  //       folder: '/Users/sinjhin/Workspace/my-app/src'
+  //     })
+  //     .on('end', function () {
+  //       var pkg = require(tmpDir + '/package.json');
+  //       var lib = pkg.system.directories.lib;
+  //
+  //       assert.equal(lib, 'src', "Absolute path was changed to relative");
+  //
+  //       done();
+  //     });
+  // });
+
+  describe('Absolute path support', function() {
+    before(function(done) {
+      helpers.run(path.join(__dirname, '../app'))
+        .inTmpDir(function(dir) {
+          tmpDir = dir;
+        })
+        .withOptions({
+          packages: donejsPackage.donejs,
+          skipInstall: true
+        })
+        .withPrompts({
+          folder: '/Users/sinjhin/Workspace/my-app/src'
+        }).on('end', done);
+    });
+
+    it('set relative path name', function() {
+      assert.jsonFileContent('package.json', {
+        system: {
+          directories: {
+            lib: 'src'
+          }
+        }
+      });
+    });
   });
 
   describe('NPM 3 support', function(){
