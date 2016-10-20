@@ -1,5 +1,7 @@
 var assert = require('assert');
 var path = require('path');
+var fs = require('fs');
+var os = require('os');
 var helpers = require('yeoman-generator').test;
 var exec = require('child_process').exec;
 var donejsPackage = require('donejs-cli/package.json');
@@ -41,12 +43,8 @@ describe('generator-donejs', function () {
     });
 
     it('fails with an invalid package name', function (done) {
-      var tmpDir;
 
       helpers.run(path.join(__dirname, '../app'))
-        .inTmpDir(function (dir) {
-          tmpDir = dir;
-        })
         .withOptions({
           packages: donejsPackage.donejs,
           skipInstall: true
@@ -63,20 +61,20 @@ describe('generator-donejs', function () {
   });
 
   describe('Absolute path support', function() {
-    var tmpDir;
-
     before(function(done) {
       helpers.run(path.join(__dirname, '../app'))
-        .inTmpDir(function(dir) {
-          tmpDir = dir;
+        .inTmpDir(function (dir) {
+          this.withPrompts({
+            folder: path.join(fs.realpathSync(dir), '/src')
+          })
         })
         .withOptions({
           packages: donejsPackage.donejs,
           skipInstall: true
         })
-        .withPrompts({
-          folder: path.join(__dirname, "../app/src")
-        }).on('end', done);
+        .on('end', function() {
+          done();
+        })
     });
 
     it('set relative path name', function() {
@@ -87,6 +85,25 @@ describe('generator-donejs', function () {
           }
         }
       });
+    });
+  });
+
+  describe('External path will error', function() {
+    it("fails with external path", function(done) {
+      helpers.run(path.join(__dirname, '../app'))
+        .withPrompts({
+          folder: os.homedir()
+        })
+        .withOptions({
+          packages: donejsPackage.donejs,
+          skipInstall: true
+        })
+        .on('error', function(err){
+          var msg = err.message;
+          console.log(msg);
+          assert(/is external/.test(msg), 'Error because of invalid external folder path');
+          done();
+        });
     });
   });
 

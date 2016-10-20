@@ -101,12 +101,23 @@ module.exports = generators.Base.extend({
         this.props.name = _.kebabCase(this.props.name);
 
         var validationResults = validate(this.props.name);
-        var isValid = validationResults.validForNewPackages;
+        var isValidName = validationResults.validForNewPackages;
 
-        if(!isValid) {
+        if(!isValidName) {
           var warnings = validationResults.warnings;
           var error = new Error('Your project name ' + this.props.name + ' is not ' +
             'valid. Please try another name. Reason: ' + warnings[0]);
+          done(error);
+          return;
+        }
+
+        if (path.isAbsolute(this.props.folder)) {
+          this.props.folder = path.relative(this.destinationPath(), this.props.folder);
+        }
+        var isValidPath = !this.props.folder.includes('../');
+        if (!isValidPath) {
+          var error = new Error('Your project main folder ' + this.props.folder + ' is external ' +
+            'to the project folder. Please set to internal path.');
           done(error);
           return;
         }
@@ -119,11 +130,6 @@ module.exports = generators.Base.extend({
   writing: function () {
 		var pkgName = this.props.name;
 		var pkgMain = pkgName + '/index.stache!done-autorender';
-
-    if (path.isAbsolute(this.props.folder)) {
-      var cd = __dirname;
-      this.props.folder = path.relative(cd, this.props.folder);
-    }
 
     var self = this;
     var pkgJsonFields = {
