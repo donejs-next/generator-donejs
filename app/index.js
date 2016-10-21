@@ -114,7 +114,7 @@ module.exports = generators.Base.extend({
         if (path.isAbsolute(this.props.folder)) {
           this.props.folder = path.relative(this.destinationPath(), this.props.folder);
         }
-        var isValidPath = !this.props.folder.includes('../');
+        var isValidPath = this.props.folder.indexOf('../') === -1;
         if (!isValidPath) {
           var error = new Error('Your project main folder ' + this.props.folder + ' is external ' +
             'to the project folder. Please set to internal path.');
