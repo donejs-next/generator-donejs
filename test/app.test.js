@@ -91,8 +91,10 @@ describe('generator-donejs', function () {
   describe('External path will error', function() {
     it("fails with external path", function(done) {
       helpers.run(path.join(__dirname, '../app'))
-        .withPrompts({
-          folder: os.homedir()
+        .inTmpDir(function (dir) {
+          this.withPrompts({
+            folder: path.join(fs.realpathSync(dir), '../../src')
+          })
         })
         .withOptions({
           packages: donejsPackage.donejs,
