@@ -64,7 +64,7 @@ describe('generator-donejs', function () {
       helpers.run(path.join(__dirname, '../app'))
         .inTmpDir(function (dir) {
           this.withPrompts({
-            folder: path.join(fs.realpathSync(dir), '/src')
+            folder: path.join(fs.realpathSync(dir), 'src')
           })
         })
         .withOptions({
@@ -92,7 +92,7 @@ describe('generator-donejs', function () {
       helpers.run(path.join(__dirname, '../app'))
         .inTmpDir(function (dir) {
           this.withPrompts({
-            folder: path.join(fs.realpathSync(dir), '../../src')
+            folder: path.join(fs.realpathSync(dir), '..', 'src')
           })
         })
         .withOptions({
