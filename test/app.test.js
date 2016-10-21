@@ -1,7 +1,6 @@
 var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
-var os = require('os');
 var helpers = require('yeoman-generator').test;
 var exec = require('child_process').exec;
 var donejsPackage = require('donejs-cli/package.json');
